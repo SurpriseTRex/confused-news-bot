@@ -1,35 +1,42 @@
 import praw
 import random
+from TwitterAPI import TwitterAPI
 
 
-def get_thread(subreddits, limit):
-    threads = r.get_subreddit(subreddits).get_hot(limit=limit)
-    return random.choice([x for x in threads])
+def get_submission(subreddits, num):
+    threads_gen = r.get_subreddit(subreddits).get_hot(limit=num)
+    return random.choice([x for x in threads_gen])
 
 
 def get_comment(subreddits):
-    comments_pool = r.get_comments(subreddits)
-    flat_comments = praw.helpers.flatten_tree(comments_pool)
+    comments_gen = r.get_comments(subreddits)
+    comments_list = [x for x in comments_gen]
+    flat_comments = praw.helpers.flatten_tree(comments_list)
     return random.choice(flat_comments)
 
 
-def build_tweet(thread, comment):
-    tweet = '"' + thread.title + '" ' + comment.body
-    if len(tweet) < 140:
-        return tweet
-    else:
-        build_tweet(
-            get_thread(subreddits, limit),
-            get_comment(subreddits))
+def post_tweet(tweet):
+    con_key = 'WZlNC5ScS3fGKjnPFnWcyZnFA'
+    con_secret = 'lCOs4IFJVgKM7s0Jc3HZWpA2amGSdP6JjvTZa1yLZMhCuzy0E3'
+    acc_token = '2967428775-exHsLd98CQBw4Wbz6GPxyupXaG5RWvnA2XVPJPG'
+    acc_secret = 'WumBq6sCFTJ0fbTbYETNEuXCKabh47c5IeCEV47oVqVCv'
 
-subreddits = 'news+uknews+worldnews'
-limit = 100
+    api = TwitterAPI(con_key, con_secret, acc_token, acc_secret)
+    post = api.request('statuses/update', {'status': tweet})
+    return post.status_code
 
 r = praw.Reddit(
     user_agent='Python/PRAW:Random Comment Sampler:v1.0 (by /u/surprisetrex')
 
-tweet = build_tweet(
-            get_thread(subreddits, limit),
-            get_comment(subreddits))
+subreddits = 'news+uknews+worldnews'
+snark = random.choice(('Typical!', 'Hah!', 'Pfft.', 'Hmm.', 'Yeah right.'))
+
+tweet = ''
+
+while tweet == '' or len(tweet) > 140:
+    submission = get_submission(subreddits, 100)
+    comment = get_comment(subreddits)
+    tweet = '"' + submission.title + '" ' + snark + ' ' + comment.body
 
 print(tweet)
+post_tweet(tweet)
