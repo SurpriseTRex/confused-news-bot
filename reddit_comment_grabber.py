@@ -4,7 +4,7 @@ from TwitterAPI import TwitterAPI
 
 
 def get_submission(subreddits, num):
-    threads_gen = r.get_subreddit(subreddits).get_hot(limit=num)
+    threads_gen = r.get_subreddit(subreddits).get_new(limit=num)
     return random.choice([x for x in threads_gen])
 
 
@@ -29,12 +29,14 @@ r = praw.Reddit(
     user_agent='Python/PRAW:Random Comment Sampler:v1.0 (by /u/surprisetrex')
 
 subreddits = 'news+uknews+worldnews'
-snark = random.choice(('Typical!', 'Hah!', 'Pfft.', 'Hmm.', 'Yeah right.'))
+snark = random.choice((
+    'Typical!', 'Hah!', 'Pfft.', 'Hmm.',
+    'Yeah right.', 'What next?', 'Obviously.'))
 
 tweet = ''
 
 while tweet == '' or len(tweet) > 140:
-    submission = get_submission(subreddits, 100)
+    submission = get_submission(subreddits, 500)
     comment = get_comment(subreddits)
     tweet = '"' + submission.title + '" ' + snark + ' ' + comment.body
 
