@@ -8,8 +8,8 @@ def get_submission(subreddits, num):
     return random.choice([x for x in threads_gen])
 
 
-def get_comment(subreddits):
-    comments_gen = r.get_comments(subreddits)
+def get_comment(subreddits, num):
+    comments_gen = r.get_comments(subreddits, limit=num)
     comments_list = [x for x in comments_gen]
     flat_comments = praw.helpers.flatten_tree(comments_list)
     return random.choice(flat_comments)
@@ -26,18 +26,18 @@ def post_tweet(tweet):
     return post.status_code
 
 r = praw.Reddit(
-    user_agent='Python/PRAW:Random Comment Sampler:v1.0 (by /u/surprisetrex')
+    user_agent='Python/PRAW:Random Comment Sampler:v1.0 by /u/surprisetrex')
 
 subreddits = 'news+uknews+worldnews'
 snark = random.choice((
-    'Typical!', 'Hah!', 'Pfft.', 'Hmm.',
+    'Typical!', 'Hah!', 'Pfft.', 'Hmm.', 'Uh oh.',
     'Yeah right.', 'What next?', 'Obviously.'))
 
 tweet = ''
 
 while tweet == '' or len(tweet) > 140:
     submission = get_submission(subreddits, 500)
-    comment = get_comment(subreddits)
+    comment = get_comment(subreddits, 100)
     tweet = '"' + submission.title + '" ' + snark + ' ' + comment.body
 
 print(tweet)
