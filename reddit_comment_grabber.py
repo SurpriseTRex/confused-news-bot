@@ -30,7 +30,7 @@ r = praw.Reddit(
 
 subreddits = 'news+uknews+worldnews'
 snark = random.choice((
-    'Typical!', 'Hah!', 'Pfft.', 'Hmm.', 'Uh oh.',
+    '', 'Typical!', 'Hah!', 'Pfft.', 'Hmm.', 'Uh oh.',
     'Yeah right.', 'What next?', 'Obviously.'))
 
 tweet = ''
